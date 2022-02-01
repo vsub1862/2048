@@ -3,10 +3,10 @@ import java.util.Random;
 public class Board {
  
 	private int[][] board; // holds state of game
-	private Random rnd = new Random(0); // setup random # generator
+	private Random rnd = new Random(13); // setup random # generator
 	
 	//What instance variable can you add to keep track of the size or the number of tiles occupied?
-	
+	private int size = 0;
 	/* default constructor for board */
 	// constructors must match exactly the name
 	// of the class.
@@ -44,13 +44,37 @@ public class Board {
 		 * System.out.println(String.format("%04d",x));
 		 *     
 		 */
+		String builder ="" ;
 		
+		
+		//builder +=String.format("%04d",board[0][1]) ;
+		//Inserting new lines
+		//builder += "\n";
+		//builder +=String.format("%04d",board[0][2]) ;
+		
+		//1) write the nested loop nessesary to traverse 2d array
+		//2) determine in the nested loop when you should add a 
+		// new line character
+		// the console should output what looks like a 2x2 matrix
 		//setup loops to visit
 		//every spot possible
+		for(int row = 0 ; row < board.length; row++) {
+			for(int col = 0; col < board[0].length; col++) {
+				builder += " ";
+				builder +=String.format("%04d",board[row][col]) ;
+				if(col%3 == 0 && col != 0) {
+				builder += "\n";
+				}
+				if(board[row][col] != 0) {
+					size++;
+				}
+				
+			}
+		}
 		
 		
+		return builder;
 		
-		return "";
 	}
 
 	/*
@@ -62,16 +86,26 @@ public class Board {
 	 * int randomNum = rnd.nextInt(10); //returns a number in range [0 10) (not
 	 * inclusive on the 10)
 	 */
-
+	
 	public void populateOne() {
-		
+		int row = (int)(Math.random() * 3) +0;
+		int col = (int)(Math.random() * 3) +0;
+		int slide = 0;
+		int rng = (int)(Math.random() * 9) +0;
 		// is there an empty spot?
 		// for randomness, generate a row and column
 		// check if that tile is empty, if it is NOT empty,
 		// generate another set of row and column
 		// what happens if the entire board is full??! 
 		
-		
+		if(board[row][col] == 0 ) {
+			if(rng < 2) {
+				board[row][col] = 4;
+			}
+			else {
+				board[row][col] = 2;
+			}
+		}
 		
 			
 
@@ -87,13 +121,24 @@ public class Board {
 	 * [2 8 0 2]->[0 2 8 2]
 	 * [4 0 0 0]->[0 0 0 4]
 	 */
-
+	public void eraseBoard() {
+		for(int row = 0; row < board.length; row++) {
+			for(int col = 0; col < board[0].length; col++) {
+				board[row][col] = 0;
+			}
+		}
+	}
 	public void slideRight(int[] row) {
-		
-
+		for(int pass = 0; pass < row.length; pass ++) {
+		for(int i = row.length-1; i >0; i--) {
+			if(row[i] ==0 && row[i-1] != 0) {
+				row[i] = row[i-1];
+				row[i-1] =0;
+			}
+		}
 	
 	}
-
+	}
 	/*
 	 * 
 	 * Move the numbers as far to the right as they can go
@@ -109,7 +154,17 @@ public class Board {
 
 		// go through 2D array, move all digits as far right as possible
 		//setup a loop to grab ONE row at a time from 2d array board
-	
+		for(int row = 0; row < board.length; row++) {
+		for(int pass = 0; pass < board.length; pass ++) {
+			for(int i = board[0].length-1; i >0; i--) {
+				if(board[row][i] ==0 && board[row][i-1] != 0) {
+					board[row][i] = board[row][i-1];
+					board[row][i-1] =0;
+				}
+			}
+		
+		}
+		}
 		
 	}
 
@@ -124,7 +179,15 @@ public class Board {
 
 	public void slideLeft(int[] arr) {
 		
+		for(int pass = 0; pass < arr.length; pass ++) {
+			for(int i =0; i <board[0].length-1; i++) {
+				if(arr[i] ==0 && arr[i+1] != 0) {
+					arr[i] = arr[i+1];
+					arr[i+1] =0;
+				}
+			}
 		
+		}
 		
 	}
 
@@ -138,7 +201,18 @@ public class Board {
 		
 		// grabbing a row from a 2D array
 		// if it's called arr then arr[i] grabs ONE row!
-	
+		for(int row = 0; row < board.length; row++) {
+			for(int pass = 0; pass < board.length; pass ++) {
+				for(int i = 0; i <board[0].length-1; i++) {
+					if(board[row][i] ==0 && board[row][i+1] != 0) {
+						board[row][i] = board[row][i+1];
+						board[row][i+1] =0;
+					}
+				}
+			
+			}
+			}
+			
 		
 		
 		//visit every single row in the 2D array
@@ -154,8 +228,11 @@ public class Board {
 	public int[] getCol(int[][] data, int c) {
 		
 		//you can also add print out statements here
-		return new int[0];
-		
+		int[] result = new int[data[0].length];
+		for(int row = 0; row<data[0].length; row++) {
+			result[row] = data[row][c];
+		}
+		return result;
 	}
 
 	/**
@@ -165,6 +242,8 @@ public class Board {
 	 */
 
 	public void slideUp(int[] arr) {
+		Board b = new Board();
+		b.slideLeft(arr);
 		/* calls a helper method */
 		// do not rewrite logic you already have!
 	}
@@ -176,6 +255,17 @@ public class Board {
 	 * You must use slideUp and getCol for full credit.
 	 */
 	public void slideUp() {
+		Board b = new Board();
+		int result[] = new int[board[0].length];
+		for(int col = 0; col < board[0].length; col++) {
+			
+			result = b.getCol(board, col);
+			b.slideUp(result);
+			for(int pass = 0;pass < board.length; pass++) {
+				board[pass][col] = result[pass];
+			}
+			
+			}
 		
 		//visit every column index
 		//grab each column as an array using getCol -> keep track of it in a 1d array
@@ -190,7 +280,8 @@ public class Board {
 	}
 
 	public void slideDown(int[] arr) {
-
+		Board b = new Board();
+		b.slideRight(arr);
 		
 	}
 
@@ -201,6 +292,18 @@ public class Board {
 	 */
 
 	public void slideDown() {
+		
+		Board b = new Board();
+		int result[] = new int[board[0].length];
+		for(int col = 0; col < board[0].length; col++) {
+			
+			result = b.getCol(board, col);
+			b.slideDown(result);
+			for(int pass = 0;pass < board.length; pass++) {
+				board[pass][col] = result[pass];
+			}
+			
+			}
 
 	}
 
@@ -215,9 +318,35 @@ public class Board {
 	 * 
 	 * Notice that the left element is zeroed out.
 	 */
+	public void combineLeft(int arr[]) {
+		
+		
+		for(int i = 0; i <arr.length-1; i++) {
+			if(arr[i] ==arr[i+1]) {
+				arr[i] += arr[i+1];
+				arr[i+1] =0;
+			}
+		}
+				
+				
+			
+			
+			
+	}
 
 	public void combineRight() {
-
+		Board b = new Board();
+		for(int row = 0; row < board.length; row++) {
+			
+				for(int i = board[0].length-1; i >0; i--) {
+					if(board[row][i] ==board[row][i-1]) {
+						board[row][i] += board[row][i-1];
+						board[row][i-1] =0;
+					}
+				}
+			
+			
+			}
 	}
 
 	/*
@@ -226,7 +355,17 @@ public class Board {
 	 */
 
 	public void combineLeft() {
-		
+		for(int row = 0; row < board.length; row++) {
+			
+				for(int i = 0; i <board[0].length-1; i++) {
+					if(board[row][i] ==board[row][i+1]) {
+						board[row][i] += board[row][i+1];
+						board[row][i+1] =0;
+					}
+				}
+			
+			
+			}
 	}
 	
 	/*
@@ -235,7 +374,17 @@ public class Board {
 	 */
 
 	public void combineUp() {
-
+		Board b = new Board();
+		int result[] = new int[board[0].length];
+		for(int col = 0; col < board[0].length; col++) {
+			
+			result = b.getCol(board, col);
+			b.combineLeft(result);
+			for(int pass = 0;pass < board.length; pass++) {
+				board[pass][col] = result[pass];
+			}
+			
+			}
 	}
 
 	/*
